@@ -6,7 +6,7 @@ The Ethereum Virtual Machine (EVM) provides a pre-compile to verify and recover 
 ⇒ 🕹️ [Demo Playground [Görli]](https://goerli.etherscan.io/address/0xce9d78888b5bcce734a623c5e1d7a08061d40c74#readContract)<br>
 ⇒ 📄 [EcdsaSignaturePlayground.sol](./EcdsaSignaturePlayground.sol)
 
-Have fun, play around with the `DEMO_*` methods or convert signature params using `flipSignatureParams()` (see (1)) below.
+Have fun, play around with the `DEMO_*` methods or convert signature params using `flipSignatureParams()` (see [1](#1-signature-vrs-and-vr-s-mod-n-equally-verify-for-the-same-message)).
 
 <a href="https://goerli.etherscan.io/address/0xce9d78888b5bcce734a623c5e1d7a08061d40c74#readContract" ><img width="691" alt="image" src="https://user-images.githubusercontent.com/2865694/159253926-a328cb2c-9147-491f-bcf3-05566bd4a5eb.png"></a>
 
