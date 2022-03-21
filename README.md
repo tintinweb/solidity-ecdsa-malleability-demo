@@ -3,7 +3,7 @@
 
 The Ethereum Virtual Machine (EVM) provides a pre-compile to verify and recover signers of ECDSA signed messages. However, there are a couple of interesting quirks one should know about [ecrecover()](https://docs.soliditylang.org/en/v0.4.24/units-and-global-variables.html#mathematical-and-cryptographic-functions) that may affect the security of the system using it.
 
-⇒ 🕹️ [Demo Playground on Görli](https://goerli.etherscan.io/address/0xce9d78888b5bcce734a623c5e1d7a08061d40c74#readContract)<br>
+⇒ 🕹️ [Demo Playground [Görli]](https://goerli.etherscan.io/address/0xce9d78888b5bcce734a623c5e1d7a08061d40c74#readContract)<br>
 ⇒ 📄 [EcdsaSignaturePlayground.sol](./EcdsaSignaturePlayground.sol)
 
 <a href="https://goerli.etherscan.io/address/0xce9d78888b5bcce734a623c5e1d7a08061d40c74#readContract" ><img width="691" alt="image" src="https://user-images.githubusercontent.com/2865694/159253926-a328cb2c-9147-491f-bcf3-05566bd4a5eb.png"></a>
@@ -23,14 +23,14 @@ The sister `sig'` can be created as follows:
 
 ### 🕹️ Demo
 
-⇒  `EcdsaSignaturePlayground.DEMO_malleableSignatureParams()`
+⇒  `EcdsaSignaturePlayground.DEMO_malleableSignatureParams()`: Returns the 'sister signature' params for the demo signature `DEMO_getDemoSignature()`. 
 
 ### ⚠️ Security
 
 Never use the raw signature bytes or signature parameters as a unique identifier in your system (see [CWE-347: Improper Verification of Cryptographic Signature](https://swcregistry.io/docs/SWC-117)). Safe implementation: [OpenZeppelin's ECDSA.sol](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/afb20119b33072da041c97ea717d3ce4417b5e01/contracts/utils/cryptography/ECDSA.sol).
 
 
-## 2) May recover arbitrary addresses for invalid signatures
+## 2) May recover 'random' addresses for invalid signatures
 
 This, can be forced by setting ...
 
@@ -38,7 +38,7 @@ This, can be forced by setting ...
 
 ### 🕹️ Demo
 
-⇒ `EcdsaSignaturePlayground.DEMO_arbitrarySigner()`
+⇒ `EcdsaSignaturePlayground.DEMO_arbitrarySigner()`: Modifies `DEMO_getDemoSignature()` to make `ecrecover()` return a random address. 
 
 ### ⚠️ Security
 
@@ -55,7 +55,7 @@ This, can be forced by setting an ...
 
 ### 🕹️ Demo
 
-⇒ `EcdsaSignaturePlayground.DEMO_forcedRecoverError()`
+⇒ `EcdsaSignaturePlayground.DEMO_forcedRecoverError()`: Intentionally fails `ecrecover` by modifying the demo signature  `DEMO_getDemoSignature()` to return `address(0x0)`. 
   
 ### ⚠️ Security
 
