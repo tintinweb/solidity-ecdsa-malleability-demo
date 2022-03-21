@@ -1,8 +1,7 @@
 # Solidity `ecrecover()` / ECDSA Playground
 
 
-The Ethereum Virtual Machine (EVM) provides a pre-compile (it is actually a built-in contract) ECDSA signature verification functionality via a call to [ecrecover()](https://docs.soliditylang.org/en/v0.4.24/units-and-global-variables.html#mathematical-and-cryptographic-functions) and there are a couple of interesting quirks when using ECDSA signatures with Solidity Smart Contracts
-
+The Ethereum Virtual Machine (EVM) provides a pre-compile to verify and recover signers of ECDSA signed messages. However, there are a couple of interesting quirks one should know about [ecrecover()](https://docs.soliditylang.org/en/v0.4.24/units-and-global-variables.html#mathematical-and-cryptographic-functions) that may affect the security of the system using it.
 
 ⇒ 🕹️ [Demo Playground on Görli]()<br>
 ⇒ 📄 [EcdsaSignaturePlayground.sol](./EcdsaSignaturePlayground.sol)
