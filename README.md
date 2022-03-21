@@ -57,4 +57,4 @@ This, can be forced by setting an ...
   
 ### ⚠️ Security
 
-Reject signatures that recover to `address(0x0)` as this indicates an error condition.
+Reject signatures that recover to `address(0x0)` as this is indicative of an error condition.
