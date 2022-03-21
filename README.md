@@ -3,8 +3,11 @@
 
 The Ethereum Virtual Machine (EVM) provides a pre-compile to verify and recover signers of ECDSA signed messages. However, there are a couple of interesting quirks one should know about [ecrecover()](https://docs.soliditylang.org/en/v0.4.24/units-and-global-variables.html#mathematical-and-cryptographic-functions) that may affect the security of the system using it.
 
-⇒ 🕹️ [Demo Playground on Görli]()<br>
+⇒ 🕹️ [Demo Playground on Görli](https://goerli.etherscan.io/address/0xce9d78888b5bcce734a623c5e1d7a08061d40c74#readContract)<br>
 ⇒ 📄 [EcdsaSignaturePlayground.sol](./EcdsaSignaturePlayground.sol)
+
+<a href="https://goerli.etherscan.io/address/0xce9d78888b5bcce734a623c5e1d7a08061d40c74#readContract" ><img width="691" alt="image" src="https://user-images.githubusercontent.com/2865694/159253926-a328cb2c-9147-491f-bcf3-05566bd4a5eb.png"></a>
+
 
 
 ## 1) Multiple parameters verify the same signature/message
@@ -48,7 +51,7 @@ Ensure the address recovered from the signature is an address you expect in the 
 This, can be forced by setting an ...
 
 * `v` to an invalid value
-* `r` to a invalid/random value
+* `r` to a value that is not in the field secp256k1 (`> SECP256K1_N`)
 
 ### 🕹️ Demo
 

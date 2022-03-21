@@ -1,7 +1,7 @@
 /**
  * @author github.com/tintinweb
  * @license MIT
- *
+ * see https://github.com/tintinweb/solidity-ecdsa-malleability-demo
  **/
 
 // SPDX-License-Identifier: MIT
@@ -10,19 +10,25 @@ pragma solidity ^0.8.0;
 contract EcdsaSignaturePlayground {
 
     uint constant SECP256K1_N  = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141;
-    uint nonce;
-
-    event LogSigParams(address signer, uint8 v, bytes32 r, bytes32 s, bytes32 hash);
 
     /**
-     * @dev Demo - take valid signature params and flip 's'.
-     * @dev emits two LogSigParams events
+     * @dev Demo Signature
+     * @return Demo signature data (h(m), v, r, s)
      */
-    function DEMO_malleableSignatureParams() public returns(address) {
+    function DEMO_getDemoSignature() public pure returns(bytes32 , uint8 , bytes32 , bytes32) {
         bytes32 hashedMessage = 0x1c8aff950685c2ed4bc3174f3472287b56d9517b9c948127319a09a7a36deac8;
         bytes32 r = 0xb7cf302145348387b9e69fde82d8e634a0f8761e78da3bfa059efced97cbed0d;
         bytes32 s = 0x2a66b69167cafe0ccfc726aec6ee393fea3cf0e4f3f9c394705e0f56d9bfe1c9;
         uint8 v = 28;
+        return (hashedMessage, v, r, s);
+    }
+
+    /**
+     * @dev Demo - take valid signature params and flip 's'.
+     * @return signer of mangled signature (h(m), v, r, s)
+     */
+    function DEMO_malleableSignatureParams() public pure returns(bytes32 , uint8 , bytes32 , bytes32) {
+        (bytes32 hashedMessage, uint8 v, bytes32 r, bytes32 s) = DEMO_getDemoSignature();
         return testMalleableSignature(hashedMessage, v, r, s);
     }
 
@@ -34,22 +40,20 @@ contract EcdsaSignaturePlayground {
      * @param _s signature param s
      * @return signer of mangled signature
      */
-    function testMalleableSignature(bytes32 _hashedMessage, uint8 _v, bytes32 _r, bytes32 _s) public returns(address) {
+    function testMalleableSignature(bytes32 _hashedMessage, uint8 _v, bytes32 _r, bytes32 _s) public pure returns(bytes32 , uint8 , bytes32 , bytes32) {
         
         // 1) get original signer
         address original_signer =  recoverSigner(_hashedMessage, _v, _r, _s);
-        emit LogSigParams(original_signer, _v, _r, _s, _hashedMessage);
 
         // 2) flip signature
         (, uint8 v2,, bytes32 s2) = flipSignatureParams(_hashedMessage, _v, _r, _s);
 
         // 3) verify flipped signature
         address mangled_signer = recoverSigner(_hashedMessage, v2, _r, s2);
-        emit LogSigParams(mangled_signer, v2, _r, s2, _hashedMessage);
         
         // x) sanity check & return mangled signer
         require(original_signer == mangled_signer && _v != v2 && _s != s2, "signature mismatch");
-        return mangled_signer;
+        return (_hashedMessage, v2, _r, s2);
     }
         
 
@@ -95,15 +99,13 @@ contract EcdsaSignaturePlayground {
      * @dev Demo - return random signer address by changing 'r'
      * @dev emits LogSigParams
      */
-    function DEMO_arbitrarySigner() public returns(address){
+    function DEMO_arbitrarySigner(uint nonce) public view returns(address){
         bytes32 hashedMessage = 0x1c8aff950685c2ed4bc3174f3472287b56d9517b9c948127319a09a7a36deac8;
         bytes32 r = 0xb7cf302145348387b9e69fde82d8e634a0f8761e78da3bfa059efced97cbed0d;
         bytes32 s = bytes32(keccak256(abi.encodePacked(msg.sender, tx.origin, blockhash(block.number), nonce)));
         uint8 v = 28;
-        nonce += 1;
 
         address recoveredSigner = recoverSigner(hashedMessage, v, r, s);
-        emit LogSigParams(recoveredSigner, v, r, s, hashedMessage);
         return recoveredSigner;
     }
 
@@ -111,15 +113,13 @@ contract EcdsaSignaturePlayground {
      * @dev Demo - ecrecover error (address(0x0)) by setting an invalid 'r' or 'v'
      * @dev emits LogSigParams events
      */
-    function DEMO_forcedRecoverError() public returns(address){
+    function DEMO_forcedRecoverError(uint _nonce) public pure returns(address){
         bytes32 hashedMessage = 0x1c8aff950685c2ed4bc3174f3472287b56d9517b9c948127319a09a7a36deac8;
-        bytes32 r = bytes32(keccak256(abi.encodePacked(msg.sender, tx.origin, blockhash(block.number), nonce)));
+        bytes32 r = bytes32(SECP256K1_N + _nonce);
         bytes32 s = 0xb7cf302145348387b9e69fde82d8e634a0f8761e78da3bfa059efced97cbed0d;
         uint8 v = 28;
-        nonce += 1;
 
         address recoveredSigner = recoverSigner(hashedMessage, v, r, s);
-        emit LogSigParams(recoveredSigner, v, r, s, hashedMessage);
         return recoveredSigner;
     }
 }
