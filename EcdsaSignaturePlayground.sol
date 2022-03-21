@@ -13,7 +13,7 @@ contract EcdsaSignaturePlayground {
 
     /**
      * @dev Demo Signature
-     * @return Demo signature data (h(m), v, r, s)
+     * @return Demo signature params (h(m), v, r, s)
      */
     function DEMO_getDemoSignature() public pure returns(bytes32 , uint8 , bytes32 , bytes32) {
         bytes32 hashedMessage = 0x1c8aff950685c2ed4bc3174f3472287b56d9517b9c948127319a09a7a36deac8;
@@ -25,7 +25,7 @@ contract EcdsaSignaturePlayground {
 
     /**
      * @dev Demo - take valid signature params and flip 's'.
-     * @return signer of mangled signature (h(m), v, r, s)
+     * @return mangled signature (hash, v', r, -s mod N)
      */
     function DEMO_malleableSignatureParams() public pure returns(bytes32 , uint8 , bytes32 , bytes32) {
         (bytes32 hashedMessage, uint8 v, bytes32 r, bytes32 s) = DEMO_getDemoSignature();
@@ -38,7 +38,7 @@ contract EcdsaSignaturePlayground {
      * @param _v signature param v (0 or 1 or 27 or 28)
      * @param _r signature param r
      * @param _s signature param s
-     * @return signer of mangled signature
+     * @return signature (hash, v', r, -s mod N)
      */
     function testMalleableSignature(bytes32 _hashedMessage, uint8 _v, bytes32 _r, bytes32 _s) public pure returns(bytes32 , uint8 , bytes32 , bytes32) {
         
@@ -97,12 +97,13 @@ contract EcdsaSignaturePlayground {
 
     /**
      * @dev Demo - return random signer address by changing 'r'
-     * @dev emits LogSigParams
+     * @param _nonce additional entropy
+     * @return recoveredSigner
      */
-    function DEMO_arbitrarySigner(uint nonce) public view returns(address){
+    function DEMO_arbitrarySigner(uint _nonce) public view returns(address){
         bytes32 hashedMessage = 0x1c8aff950685c2ed4bc3174f3472287b56d9517b9c948127319a09a7a36deac8;
         bytes32 r = 0xb7cf302145348387b9e69fde82d8e634a0f8761e78da3bfa059efced97cbed0d;
-        bytes32 s = bytes32(keccak256(abi.encodePacked(msg.sender, tx.origin, blockhash(block.number), nonce)));
+        bytes32 s = bytes32(keccak256(abi.encodePacked(msg.sender, tx.origin, blockhash(block.number), _nonce)));
         uint8 v = 28;
 
         address recoveredSigner = recoverSigner(hashedMessage, v, r, s);
@@ -111,7 +112,8 @@ contract EcdsaSignaturePlayground {
 
     /**
      * @dev Demo - ecrecover error (address(0x0)) by setting an invalid 'r' or 'v'
-     * @dev emits LogSigParams events
+     * @param _nonce additional entropy
+     * @return recoveredSigner
      */
     function DEMO_forcedRecoverError(uint _nonce) public pure returns(address){
         bytes32 hashedMessage = 0x1c8aff950685c2ed4bc3174f3472287b56d9517b9c948127319a09a7a36deac8;
