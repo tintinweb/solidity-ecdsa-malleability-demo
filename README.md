@@ -1,4 +1,4 @@
-# Solidity `ecrecover()` / ECDSA Playground
+# Solidity ECDSA Quirks
 
 
 The Ethereum Virtual Machine (EVM) provides a pre-compile to verify and recover signers of ECDSA signed messages. However, there are a couple of interesting quirks one should know about [ecrecover()](https://docs.soliditylang.org/en/v0.4.24/units-and-global-variables.html#mathematical-and-cryptographic-functions) that may affect the security of the system using it.
@@ -27,7 +27,7 @@ The sister `sig'` can be created as follows:
 
 ### ⚠️ Security
 
-Never use the raw signature bytes or signature parameters as a unique identifier in your system (see [CWE-347: Improper Verification of Cryptographic Signature](https://swcregistry.io/docs/SWC-117)).
+Never use the raw signature bytes or signature parameters as a unique identifier in your system (see [CWE-347: Improper Verification of Cryptographic Signature](https://swcregistry.io/docs/SWC-117)). Safe implementation: [OpenZeppelin's ECDSA.sol](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/afb20119b33072da041c97ea717d3ce4417b5e01/contracts/utils/cryptography/ECDSA.sol).
 
 
 ## 2) May recover arbitrary addresses for invalid signatures
