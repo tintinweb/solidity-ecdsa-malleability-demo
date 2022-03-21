@@ -10,14 +10,14 @@ The Ethereum Virtual Machine (EVM) provides a pre-compile (it is actually a buil
 
 ## 1) Multiple parameters verify the same signature/message
 
-Given a valid signature  `sig = (hash(m), v, r, s)` one can construct a signature  `sig' = (hash(m), v', r, -s mod N)` that validly verifies the same message `hash(m)`.
+For a valid ECDSA signature `sig  = (v, r, s)` for message `hash(m)` there exists a sister signature pair `sig' = (v', r, -s mod N)` that validly verifies the same message `hash(m)`. 
 
 
-The second `sig'` can be created as follows:
+The sister `sig'` can be created as follows:
 
-* `v'` ... flip `v` from `27` ⇢ `28` respectively `28` ⇢ `27`  (`v=[27,28] ⇢ [28,27]`)
+* `v'` ... flip `v=[27,28] ⇢ v'=[28,27]`)
 * `r` ... keep `r`
-* `s'` ... is `-s mod N`
+* `s'` ... calculate `-s mod N`
 
 ### 🕹️ Demo
 
@@ -25,7 +25,7 @@ The second `sig'` can be created as follows:
 
 ### ⚠️ Security
 
-This is the reason why you should never include a signature as part of the signed message hash or unique identifier (see [CWE-347: Improper Verification of Cryptographic Signature](https://swcregistry.io/docs/SWC-117)).
+Never use the raw signature bytes or signature parameters as a unique identifier in your system (see [CWE-347: Improper Verification of Cryptographic Signature](https://swcregistry.io/docs/SWC-117)).
 
 
 ## 2) May recover arbitrary addresses for invalid signatures
@@ -40,7 +40,7 @@ This, can be forced by setting ...
 
 ### ⚠️ Security
 
-This is the reason why you should always check that `ecrecover(...) != address(expected)`, is an address you expect.
+Ensure the address recovered from the signature is an address you expect in the system.
 
 ## 3) Does not throw on error
 
@@ -57,4 +57,4 @@ This, can be forced by setting an ...
   
 ### ⚠️ Security
 
-This is the reason why you should reject execution on an `ecrecover()` error condition: `ecrecover(...) != address(0x0)`.
+Reject signatures that recover to `address(0x0)` as this indicates an error condition.
