@@ -6,11 +6,13 @@ The Ethereum Virtual Machine (EVM) provides a pre-compile to verify and recover 
 ⇒ 🕹️ [Demo Playground [Görli]](https://goerli.etherscan.io/address/0xce9d78888b5bcce734a623c5e1d7a08061d40c74#readContract)<br>
 ⇒ 📄 [EcdsaSignaturePlayground.sol](./EcdsaSignaturePlayground.sol)
 
+Have fun, play around with the `DEMO_*` methods or convert signature params using `flipSignatureParams()` (see (1)) below.
+
 <a href="https://goerli.etherscan.io/address/0xce9d78888b5bcce734a623c5e1d7a08061d40c74#readContract" ><img width="691" alt="image" src="https://user-images.githubusercontent.com/2865694/159253926-a328cb2c-9147-491f-bcf3-05566bd4a5eb.png"></a>
 
 
 
-## 1) Multiple parameters verify the same signature/message
+## 1) Signature `v,r,s` and `v',r,-s mod N` equally verify for the same message
 
 For a valid ECDSA signature `sig  = (v, r, s)` for message `hash(m)` there exists a sister signature pair `sig' = (v', r, -s mod N)` that validly verifies the same message `hash(m)`. 
 
@@ -23,7 +25,8 @@ The sister `sig'` can be created as follows:
 
 ### 🕹️ Demo
 
-⇒  `EcdsaSignaturePlayground.DEMO_malleableSignatureParams()`: Returns the 'sister signature' params for the demo signature `DEMO_getDemoSignature()`. 
+⇒  `EcdsaSignaturePlayground.DEMO_malleableSignatureParams()`: Returns the 'sister signature' params for the demo signature `DEMO_getDemoSignature()`. <br>
+⇒  `EcdsaSignaturePlayground.flipSignatureParams()`: directly convert your signature params to another valid set.
 
 ### ⚠️ Security
 
